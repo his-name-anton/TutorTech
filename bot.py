@@ -1,20 +1,9 @@
-import os
 import asyncio
-import logging
-from dotenv import load_dotenv, find_dotenv
-from aiogram import Bot, Dispatcher
-
-from menu import menu_router
-
-logging.basicConfig(level=logging.INFO)
+from init_bot import bot, dp
+from menu import menu_router, new_course
 
 
-load_dotenv(find_dotenv())
-bot: Bot = Bot(os.getenv('BOT_TOKEN'))
-dp: Dispatcher = Dispatcher()
-
-
-# MAIN MENU
+dp.include_router(new_course.router)
 dp.include_router(menu_router.router)
 
 

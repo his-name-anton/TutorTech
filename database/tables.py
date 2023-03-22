@@ -16,7 +16,11 @@ conn.execute('''CREATE TABLE IF NOT EXISTS users (
 # COURSE STRUCTURE
 conn.execute('''CREATE TABLE IF NOT EXISTS courses (
     id INTEGER PRIMARY KEY,
+    chat_id INTEGER,
     name VARCHAR(250),
+    duration VARCHAR(250),
+    detailed_table_text TEXT,
+    description TEXT,
     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )''')
 
@@ -44,14 +48,15 @@ conn.execute('''CREATE TABLE IF NOT EXISTS lessons (
     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )''')
 
-conn.execute('''CREATE TABLE IF NOT EXISTS parts_lesson (
+conn.execute('''CREATE TABLE IF NOT EXISTS progress_table (
     id INTEGER PRIMARY KEY,
+    chat_id INTEGER, 
+    course_id INTEGER REFERENCES courses(id) ON DELETE CASCADE,
     lesson_id INTEGER REFERENCES lessons(id) ON DELETE CASCADE,
-    text TEXT,
-    sequence_number INTEGER,
-    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    status VARCHAR(50),
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )''')
-
 
 
 conn.commit()

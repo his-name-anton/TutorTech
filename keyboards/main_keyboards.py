@@ -2,12 +2,12 @@ from aiogram.types import InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
-def make_inline_menu_board(items: dict[str: str], long_f=False) -> InlineKeyboardBuilder:
+def create_kb(items: dict[str: str], long_f=True) -> InlineKeyboardBuilder:
     if long_f:
         board = InlineKeyboardBuilder()
         for key, value in items.items():
             board.row(InlineKeyboardButton(
-                text=value[0],
+                text=value,
                 callback_data=key
             ))
     else:
