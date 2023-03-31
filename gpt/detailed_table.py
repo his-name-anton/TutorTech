@@ -1,19 +1,13 @@
 import asyncio
 import json
-import re
-from json import JSONDecodeError
 from pprint import pprint
 from menu.other import main_dict
-
 import openai
 import os
 from dotenv import find_dotenv, load_dotenv
-
-from database.dbw import Tables, db
-from gen_course.prompts import CreateCoursePrompts
+from gpt.prompts import CreateCoursePrompts
 
 load_dotenv(find_dotenv())
-
 openai.api_key = os.getenv('OPENAI_KEY')
 
 
@@ -65,12 +59,6 @@ async def create_detailed_table(chat_id: int, data: list[str, str]) -> dict:
 async def create_sections(chat_id: int,
                           detailed_table_text: int,
                           sub_chapter: str) -> dict:
-
-
-    user_content = """course name = {}
-                    the current topic on which I need lessons = {}
-                    previous topics covered  = {}
-                    topics that will be in the future = {}"""
 
     message = [{'role': 'system',
                 'content': CreateCoursePrompts.SYSTEM_CREATE_SECTIONS_V2},

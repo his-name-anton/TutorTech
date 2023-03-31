@@ -13,7 +13,7 @@ class KbButtons:
     }
     MAIN_MENU = {
         'select_new_course': 'Новый курс',
-        'solve_test': 'Решать тест'
+        'solve_quizzes': 'Решать квизы'
     }
     CONTINUE_TRAINING = {
         'continue_training': 'Продолжить обучение'
@@ -34,9 +34,9 @@ async def main_menu(msg: types.Message, state: FSMContext):
     await state.update_data(main_menu_msg=main_menu_msg)
 
 
-async def back_main_menu(cb: types.CallbackQuery, state: FSMContext):
+async def back_main_menu(cb: types.CallbackQuery, state: FSMContext, addit_text=''):
     await state.clear()
-    main_menu_msg = await cb.message.edit_text('Меню 👋',
+    main_menu_msg = await cb.message.edit_text(f'{addit_text}\n\nМеню 👋',
                                                reply_markup=create_kb(
                                                    {**KbButtons.CONTINUE_TRAINING, **KbButtons.MAIN_MENU}, )
                                                )
@@ -58,10 +58,22 @@ async def select_new_course(cb: types.CallbackQuery, state: FSMContext):
 
 
 async def continue_training(cb: types.CallbackQuery, state: FSMContext):
-    await cb.message.edit_text('Продолжаем обучение',
+    await cb.message.edit_text('Кнопка в разработке',
                                reply_markup=create_kb(KbButtons.BACK_MAIN_MENU))
 
 
-async def solve_test(cb: types.CallbackQuery, state: FSMContext):
-    await cb.message.edit_text('Решаем тесты',
-                               reply_markup=create_kb(KbButtons.BACK_MAIN_MENU))
+async def solve_quizzes(cb: types.CallbackQuery, state: FSMContext):
+    await state.set_state(States.wait_topic_for_quizzes)
+    main_dict[cb.from_user.id] = {}
+    main_dict[cb.from_user.id]["quizz"] = {"used_questions": [],
+                                           "iter": -1,
+                                           "counter_right_answers": 0,
+                                           "counter_all_quiz": 0,
+                                           "start_msg": cb.message,
+                                           # "quizzes_json": [],
+                                           "quizzes_to_go": 0,
+                                           "q_list": [],
+                                           "quizzes_complete": [],
+                                           "quizzes_list": []}
+    await cb.message.edit_text('Отлично! Давайте порешаем квизы 🤓\n\n'
+                               'Напишите тему, а я составлю для вас квизы')

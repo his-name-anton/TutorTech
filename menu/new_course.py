@@ -7,7 +7,7 @@ from keyboards.main_keyboards import create_kb
 from menu.main_menu import KbButtons
 from menu.other import main_dict
 from menu.states import States
-from gen_course.detailed_table import create_detailed_table, create_topic_suggestion, create_sections
+from gpt.detailed_table import create_detailed_table, create_topic_suggestion, create_sections
 from database.dbw import db, Tables
 
 router: Router = Router()
@@ -21,7 +21,7 @@ async def wait_msg(msg: types.Message, text: str):
         await message.edit_text(
             f'{text}\n\nОжидайте пожалуйста, я очень стараюсь {emj_list[i % len(emj_list)]}')
         i += 1
-        time.sleep(.5)
+        time.sleep(1)
     await message.delete()
 
 
