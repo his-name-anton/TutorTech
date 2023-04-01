@@ -8,7 +8,10 @@ class Tables:
         'chapters': ['course_id', 'name', 'sequence_number'],
         'sub_chapters': ['chapter_id', 'name', 'sequence_number'],
         'lessons': ['sub_chapter_id', 'name', 'sequence_number'],
-        'progress_table': ['chat_id', 'course_id', 'lesson_id', 'status']
+        'progress_table': ['chat_id', 'course_id', 'lesson_id', 'status'],
+        'quizzes': ['topic'],
+        'quizzes_questions': ['quiz_id', 'question', 'explanation', 'example'],
+        'question_options': ['question_id', 'option', 'is_correct']
     }
     USERS = 'users'
     COURSES = 'courses'
@@ -17,6 +20,9 @@ class Tables:
     LESSONS = 'lessons'
     PARTS_LESSON = 'parts_lesson'
     PROGRESS_TABLE = 'progress_table'
+    QUIZZES = "quizzes"
+    QUIZZES_QUESTIONS = "quizzes_questions"
+    QUIZZES_OPTIONS = "question_options"
 
 
 class DataBase:

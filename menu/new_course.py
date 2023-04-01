@@ -14,7 +14,7 @@ router: Router = Router()
 
 
 async def wait_msg(msg: types.Message, text: str):
-    emj_list = ['🌕', '🌖', '🌗', '🌘', '🌑', '🌒', '🌓', '🌔']
+    emj_list = ['📕', '📗', '📘', '📙']
     message = await msg.answer(f'{text}\n\nОжидайте пожалуйста, я очень стараюсь {emj_list[0]}')
     i = 1
     while main_dict[msg.chat.id]['wait']:

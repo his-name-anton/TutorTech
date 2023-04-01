@@ -58,6 +58,33 @@ conn.execute('''CREATE TABLE IF NOT EXISTS progress_table (
     modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )''')
 
+# quizzes
+conn.execute('''CREATE TABLE IF NOT EXISTS quizzes (
+    id INTEGER PRIMARY KEY,
+    topic VARCHAR(100),
+    title VARCHAR(100),
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)''')
+
+conn.execute('''CREATE TABLE IF NOT EXISTS quizzes_questions (
+    id INTEGER PRIMARY KEY,
+    quiz_id INTEGER REFERENCES quizzes(id) ON DELETE CASCADE,
+    question TEXT,
+    explanation TEXT,
+    example TEXT,
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)''')
+
+conn.execute('''CREATE TABLE IF NOT EXISTS question_options (
+    id INTEGER PRIMARY KEY,
+    question_id INTEGER REFERENCES quizzes_questions(id) ON DELETE CASCADE,
+    option TEXT,
+    is_correct INTEGER,
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)''')
+
+
+
 
 conn.commit()
 conn.close()

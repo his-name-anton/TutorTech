@@ -13,10 +13,8 @@ class KbButtons:
     }
     MAIN_MENU = {
         'select_new_course': 'Новый курс',
-        'solve_quizzes': 'Решать квизы'
-    }
-    CONTINUE_TRAINING = {
-        'continue_training': 'Продолжить обучение'
+        'solve_quizzes': 'Решать квизы',
+        'init_tips': 'Tips'
     }
     BACK_MAIN_MENU = {
         'back_main_menu': '⬅️ Назад'
@@ -29,7 +27,7 @@ class KbButtons:
 
 async def main_menu(msg: types.Message, state: FSMContext):
     main_menu_msg = await msg.answer('Меню 👋',
-                                     reply_markup=create_kb({**KbButtons.CONTINUE_TRAINING, **KbButtons.MAIN_MENU}, )
+                                     reply_markup=create_kb(KbButtons.MAIN_MENU)
                                      )
     await state.update_data(main_menu_msg=main_menu_msg)
 
@@ -37,8 +35,7 @@ async def main_menu(msg: types.Message, state: FSMContext):
 async def back_main_menu(cb: types.CallbackQuery, state: FSMContext, addit_text=''):
     await state.clear()
     main_menu_msg = await cb.message.edit_text(f'{addit_text}\n\nМеню 👋',
-                                               reply_markup=create_kb(
-                                                   {**KbButtons.CONTINUE_TRAINING, **KbButtons.MAIN_MENU}, )
+                                               reply_markup=create_kb(  KbButtons.MAIN_MENU)
                                                )
     await state.update_data(main_menu_msg=main_menu_msg)
 
@@ -62,6 +59,16 @@ async def continue_training(cb: types.CallbackQuery, state: FSMContext):
                                reply_markup=create_kb(KbButtons.BACK_MAIN_MENU))
 
 
+async def init_tips(cb: types.CallbackQuery, state: FSMContext):
+    await cb.message.edit_text('Выберите',
+                               reply_markup=create_kb(
+                                   {'tips_topic_code': 'Програмирование',
+                                    'tips_any_topic': 'Другая тема',
+                                    **KbButtons.BACK_MAIN_MENU}
+                                    )
+                               )
+
+
 async def solve_quizzes(cb: types.CallbackQuery, state: FSMContext):
     await state.set_state(States.wait_topic_for_quizzes)
     main_dict[cb.from_user.id] = {}
@@ -76,4 +83,5 @@ async def solve_quizzes(cb: types.CallbackQuery, state: FSMContext):
                                            "quizzes_complete": [],
                                            "quizzes_list": []}
     await cb.message.edit_text('Отлично! Давайте порешаем квизы 🤓\n\n'
-                               'Напишите тему, а я составлю для вас квизы')
+                               'Напишите тему, а я составлю для вас квизы',
+                               reply_markup=create_kb(KbButtons.BACK_MAIN_MENU))

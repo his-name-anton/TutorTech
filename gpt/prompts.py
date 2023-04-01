@@ -177,16 +177,21 @@ class CreateQuizzesPrompts:
     I only need the questions themselves, not the answer choices. 
     The scale of difficulty is from 1 to 5, where 1 is for beginners and 5 is for professionals. 
     Give me the answer in json format. 
-    The text of the questions should be in Russian.
+    The text of the questions should be in only Russian.
     If the question text contains a code, then we have found it in the <code> and </code> tags.
     odd-numbered questions should contain code examples, even-numbered questions should not contain code
     
     output example:
     <json>
     {
-    "quiz": {
-    "questions": ["question 1", "question 2", ... "question 20"]
-    }
+      "quiz": {
+        "questions": [
+          "question 1",
+          "question 2",
+          ...
+          "question 20"
+        ]
+      }
     }
     </json>
     
