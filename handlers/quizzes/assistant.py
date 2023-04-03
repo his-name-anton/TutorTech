@@ -1,24 +1,25 @@
+import asyncio
 import math
 import re
 from pprint import pprint
 
+from aiogram import types
 from aiogram.types import InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from bs4 import BeautifulSoup
 
 from redis_cash.redis_client import QuizRedis
 
-
-# 1. Должен сделать счётчик
-# 2. Должен отдавать итоговой текст для сообщения
-# 3. Должен отдавать клавиатуру
-# 4. логировать данные
+DEFAULT_WAIT_EMJ = ['📕', '📗', '📘', '📙']
 
 
 class BaseAssistant:
-    def __init__(self, user_id):
+    def __init__(self, user_id, wait_msg_emj=None):
         self.user_id = user_id
         self.data = QuizRedis(user_id)
+        self.wait_msg_emj = DEFAULT_WAIT_EMJ if not wait_msg_emj else wait_msg_emj
+        self.wait_msg_text = "Ожидайте пожалуйста\n"
+
 
     def _create_kb(self, items: dict[str: str], long_f: object = True) -> InlineKeyboardBuilder:
         if long_f:
@@ -44,11 +45,27 @@ class BaseAssistant:
             board = InlineKeyboardBuilder(buttons)
         return board.as_markup()
 
+
     def _generate_text(self, *args) -> str:
         for item in args:
             if not isinstance(item, str):
                 raise ValueError('Тип аргументов должен быть строкой')
         return ''.join(args)
+
+
+    async def _wait_result_msg(self, text):
+        # Здесь сообщение для ожидания
+        data = QuizRedis(self.user_id)
+        main_msg: types.Message = data.get_message(data.MAIN_MSG)
+        i = 0
+        while int(data.get_flag_gpt_process()):
+            emj_list = self.wait_msg_emj
+            wait_text = f'{self.wait_msg_text}{"".join(emj_list[: i % len(emj_list) + 1])}'
+            await main_msg.edit_text(text + wait_text,
+                                     reply_markup=self._create_kb({'cancel_gpt_process': 'Отменить ⛔'})
+                                     )
+            i += 1
+            await asyncio.sleep(1)
 
     def change_data_redis(self):
         pass
@@ -61,6 +78,11 @@ class QuizAssistant(BaseAssistant):
 
     def __init__(self, user_id):
         super().__init__(user_id)
+
+    async def wait_gpt_quiz(self):
+        topic = self.data.get_data(self.data.QUIZ_TOPIC)
+        text = f'Создаю викторины на тему <b>{topic}</b>\n\n'
+        await self._wait_result_msg(text)
 
     def next_quiz(self) -> tuple[str, dict]:
         quiz_index = self.data.counter(self.data.INDEX_QUIZ, 1)

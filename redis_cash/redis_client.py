@@ -33,7 +33,7 @@ class BaseRedis:
 
     USER = "user"
 
-    def __init__(self, user_id):
+    def __init__(self, user_id, name=None):
         """
         Инициализирует объект BaseRedis.
 
@@ -41,7 +41,8 @@ class BaseRedis:
         """
         self.user_id = user_id
         self.cash: redis.Redis = redis.Redis(host='localhost', port=6379, db=0)
-        self.base_path = None
+        self.name = "pass" if not name else name
+        self.base_path = f'user:{self.user_id}:{self.name}:'
 
     def set_data(self, path, value):
         """
@@ -189,7 +190,7 @@ class QuizRedis(BaseRedis):
     PROCESS = "process"
     GPT_PROCESS = "gpt_process"
 
-    def __init__(self, user_id):
+    def __init__(self, user_id, name):
         """
         Конструктор класса QuizRedis.
 
@@ -199,7 +200,8 @@ class QuizRedis(BaseRedis):
             Идентификатор пользователя.
         """
         super().__init__(user_id)
-        self.base_path = f'user:{self.user_id}:quiz:'
+        self.name = 'quiz'
+        self.base_path = f'user:{self.user_id}:{name}:'
 
     def set_current_quiz(self, **kwargs: Any):
         """
@@ -370,4 +372,3 @@ class QuizRedis(BaseRedis):
         message_bytes_from_redis = self.cash.get(self.base_path + path)
         message = pickle.loads(message_bytes_from_redis)
         return message
-

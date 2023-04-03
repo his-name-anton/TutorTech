@@ -223,3 +223,21 @@ class CreateQuizzesPrompts:
         Strictly use my json structure from the example, you cannot add new keys or change the current ones
     """
 
+
+class VocabularyPrompts:
+    INIT_LIST_WORDS = """I want you to help me learn new words in English, 
+                        I'll give you a topic and the level of my vocabulary on this topic,
+                        and you give me 20 words in English and their translation into Russian. 
+                        Graduation level from 1 to 5, where 1 I do not know the words that relate to this topic,
+                        and 5 I know a lot of words in this topic, but I want to get even more rare and complex.
+                        Give the answer in json format
+                        you example output:
+                        {
+                          "A word in the language being studied": "translation into Russian",
+                          "A word in the language being studied": "translation into Russian",
+                          "A word in the language being studied": "translation into Russian",
+                          "A word in the language being studied": "translation into Russian",
+                          etc
+                        }
+                        
+                        You don't need to write anything except json"""
