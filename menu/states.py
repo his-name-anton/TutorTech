@@ -9,3 +9,5 @@ class States(StatesGroup):
 
     wait_topic_for_quizzes = State()
     solving_quiz = State()
+
+    wait_topic_for_words = State()

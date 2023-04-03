@@ -215,7 +215,7 @@ class CreateQuizzesPrompts:
             "string",
             "string"
           ],
-          "correct_answer": "index correct answer in list answer_choices",
+          "correct_answer": integer value index correct answer in list answer_choices,
           "explanation": "string",
           "example": "string"
         }

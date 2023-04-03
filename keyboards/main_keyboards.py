@@ -2,7 +2,7 @@ from aiogram.types import InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
-def create_kb(items: dict[str: str], long_f=True) -> InlineKeyboardBuilder:
+def create_kb(items: dict[str: str], long_f: object = True) -> InlineKeyboardBuilder:
     if long_f:
         board = InlineKeyboardBuilder()
         for key, value in items.items():

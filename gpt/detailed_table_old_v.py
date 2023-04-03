@@ -1,7 +1,7 @@
 import asyncio
 import json
 from pprint import pprint
-from menu.other import main_dict
+from redis_cash.other import main_dict
 import openai
 import os
 from dotenv import find_dotenv, load_dotenv

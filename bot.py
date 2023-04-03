@@ -1,10 +1,11 @@
 import asyncio
 from init_bot import bot, dp
-from menu import menu_router, new_course
-from handlers.quizzes import quizzes
+from menu import menu_router
+from handlers.roudmap import road_map
+from handlers.quizzes import quiz
 
-dp.include_router(new_course.router)
-dp.include_router(quizzes.router)
+dp.include_router(road_map.router)
+dp.include_router(quiz.router)
 dp.include_router(menu_router.router)
 
 

@@ -1,9 +1,8 @@
-from pprint import pprint
-
 from aiogram import Router, types
 from aiogram.fsm.context import FSMContext
 
-from menu import main_menu, new_course
+from menu import main_menu
+from handlers.roudmap import road_map
 from menu.main_menu import KbButtons
 
 router: Router = Router()
@@ -18,7 +17,7 @@ names_func_buttons = list(
 @router.callback_query(lambda c: c.data in names_func_buttons)
 async def process_callback_button(cb: types.CallbackQuery, state: FSMContext):
     data = cb.data
-    func = {**vars(main_menu), **vars(new_course)}.get(data)
+    func = {**vars(main_menu), **vars(road_map)}.get(data)
     await func(cb, state)
 
 

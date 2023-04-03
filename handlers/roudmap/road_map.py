@@ -5,9 +5,9 @@ from aiogram import types, Router
 from aiogram.fsm.context import FSMContext
 from keyboards.main_keyboards import create_kb
 from menu.main_menu import KbButtons
-from menu.other import main_dict
+from redis_cash.other import main_dict
 from menu.states import States
-from gpt.detailed_table import create_detailed_table, create_topic_suggestion, create_sections
+from gpt.detailed_table_old_v import create_detailed_table, create_topic_suggestion, create_sections
 from database.dbw import db, Tables
 
 router: Router = Router()
