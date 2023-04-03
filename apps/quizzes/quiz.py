@@ -10,33 +10,15 @@ from menu.main_menu import back_main_menu
 from menu.states import States
 from redis_cash.redis_client import QuizRedis
 from gpt.gpt_client import QuizGPT
-from handlers.quizzes.assistant import QuizAssistant
+from apps.quizzes.assistant import QuizAssistant
 
 router = Router()
-
-
-async def wait_quiz_packet(user_id):
-    # Здесь сообщение для ожидания
-    data = QuizRedis(user_id)
-    main_msg: types.Message = data.get_message(data.MAIN_MSG)
-    topic = data.get_data(data.QUIZ_TOPIC)
-
-    i = 0
-    while int(data.get_flag_gpt_process()):
-        emj_list = ['📕', '📗', '📘', '📙']
-        main_text = f'Создаю викторины на тему <b>{topic}</b>\n\n'
-        wait_text = f'Ожидайте пожалуйста\n{"".join(emj_list[: i % len(emj_list) + 1])}'
-        await main_msg.edit_text(main_text + wait_text,
-                                 reply_markup=create_kb(
-                                     {'cancel_gpt_process': 'Отменить ⛔'}
-                                 ))
-        i += 1
-        await asyncio.sleep(1)
 
 
 @router.message(States.wait_topic_for_quizzes)
 async def first_quizzes(msg: types.Message, state: FSMContext):
     data = QuizRedis(msg.chat.id)
+    assistant = QuizAssistant(msg.chat.id)
 
     # данные
     quiz_id = db.insert_row(Tables.QUIZZES, (msg.text,))
@@ -50,7 +32,7 @@ async def first_quizzes(msg: types.Message, state: FSMContext):
 
     # здесь нужно создать первый пакет квизов
     gpt = asyncio.create_task(QuizGPT(msg.chat.id).get_new_quizzes())
-    wait = asyncio.create_task(wait_quiz_packet(msg.chat.id))
+    wait = asyncio.create_task(assistant.wait_gpt_quiz())
     await asyncio.gather(gpt, wait)
 
     if True:
@@ -63,12 +45,13 @@ async def first_quizzes(msg: types.Message, state: FSMContext):
 @router.callback_query(Text(['next_quizz']))
 async def next_quizz(cb: types.CallbackQuery):
     data = QuizRedis(cb.from_user.id)
+    assistant = QuizAssistant(cb.from_user.id)
     quizzes_to_go = int(data.get_data(data.QUIZZES_TO_GO))
 
     # если доступные квизы кончились, то создаём новый пакет
     if quizzes_to_go <= 0:
         gpt = asyncio.create_task(QuizGPT(cb.from_user.id).get_new_quizzes())
-        wait = asyncio.create_task(wait_quiz_packet(cb.from_user.id))
+        wait = asyncio.create_task(assistant.wait_gpt_quiz())
         if int(data.get_flag_gpt_process()):
             await asyncio.gather(wait)
         else:
@@ -87,7 +70,8 @@ async def next_quizz(cb: types.CallbackQuery):
             print(ex)
             await next_quizz(cb)
             return False
-
+    else:
+        new_text = 'Произошла ошибка, попробуй еще раз'
 
     # меняем текст главного сообщения
     await cb.message.edit_text(new_text)

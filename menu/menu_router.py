@@ -2,7 +2,7 @@ from aiogram import Router, types
 from aiogram.fsm.context import FSMContext
 
 from menu import main_menu
-from handlers.roudmap import road_map
+from apps.roudmap import road_map
 from menu.main_menu import KbButtons
 
 router: Router = Router()

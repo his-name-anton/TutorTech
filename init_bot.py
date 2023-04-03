@@ -1,11 +1,9 @@
 import os
-import logging
 
 from aiogram.client.session.aiohttp import AiohttpSession
 from dotenv import load_dotenv, find_dotenv
 from aiogram import Bot, Dispatcher
 
-logging.basicConfig(level=logging.INFO)
 load_dotenv(find_dotenv())
 
 # лучше поднять таймаут до 2-х мин
@@ -16,4 +14,6 @@ bot: Bot = Bot(os.getenv('BOT_TOKEN'),
                session=session)
 
 dp: Dispatcher = Dispatcher()
+
+
 
