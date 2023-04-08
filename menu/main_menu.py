@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from aiogram import types
 from aiogram.fsm.context import FSMContext
 from keyboards.main_keyboards import create_kb
@@ -42,9 +44,14 @@ async def back_main_menu(cb: types.CallbackQuery, state: FSMContext, addit_text=
 
 async def select_new_course(cb: types.CallbackQuery, state: FSMContext):
     await state.set_state(States.wait_theme_from_user)
-    await state.update_data(main_msg_id=cb.message.message_id)
+
+    # data
     main_dict[cb.from_user.id] = {}
     main_dict[cb.from_user.id]["new_course"] = {}
+    main_dict[cb.from_user.id]["new_course"]["edit_msg"] = cb.message
+    pprint(main_dict)
+
+    await state.update_data(main_msg_id=cb.message.message_id)
     await cb.message.edit_text('Напишите тему',
                                reply_markup=create_kb(KbButtons.BACK_MAIN_MENU))
 

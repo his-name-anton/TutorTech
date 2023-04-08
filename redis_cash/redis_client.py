@@ -33,7 +33,7 @@ class BaseRedis:
 
     USER = "user"
 
-    def __init__(self, user_id, name=None):
+    def __init__(self, user_id):
         """
         Инициализирует объект BaseRedis.
 
@@ -41,8 +41,7 @@ class BaseRedis:
         """
         self.user_id = user_id
         self.cash: redis.Redis = redis.Redis(host='localhost', port=6379, db=0)
-        self.name = "pass" if not name else name
-        self.base_path = f'user:{self.user_id}:{self.name}:'
+        self.base_path = None
 
     def set_data(self, path, value):
         """
@@ -200,7 +199,6 @@ class QuizRedis(BaseRedis):
             Идентификатор пользователя.
         """
         super().__init__(user_id)
-        self.name = 'quiz'
         self.base_path = f'user:{self.user_id}:quiz:'
 
     def set_current_quiz(self, **kwargs: Any):
@@ -372,3 +370,4 @@ class QuizRedis(BaseRedis):
         message_bytes_from_redis = self.cash.get(self.base_path + path)
         message = pickle.loads(message_bytes_from_redis)
         return message
+
